@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: redissyncer
+    # io.kompose.service: redissyncer-server
+  name: redissyncer-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      # io.kompose.service: redissyncer-server
+      app: redissyncer
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      # annotations:
+      #   kompose.cmd: kompose convert
+      #   kompose.version: 1.22.0 (955b78124)
+      labels:
+        # io.kompose.service: redissyncer-server
+        app: redissyncer
+    spec:
+      containers:
+        - env:
+            - name: JAVA_TOOL_OPTIONS
+              value: ' -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1 -Xms4000m'
+            - name: SPRING_ENV
+              value: '--server.port=8080 --syncer.config.path.logfile=/redissyncer/log --syncer.config.path.datafile=/redissyncer/data --spring.datasource.url=jdbc:sqlite:/redissyncer/syncer.db --syncer.config.auth=true --spring.boot.admin.client.url=http://127.0.0.1:8088 --spring.boot.admin.client.instance.service-url=http://127.0.0.1:8080 '
+          image: jiashiwen/redissyncer:latest
+          name: redissyncer-server
+          resources:
+            limits:
+              memory: "4294967296"
+          volumeMounts:
+          - name: data
+            mountPath: "/redissyncer"      
+          ports:
+          - containerPort: 8080
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: redissyncer-pv-claim

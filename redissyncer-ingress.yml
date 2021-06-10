@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: redissyncer-ingress
+  annotations:
+    # use the shared ingress-nginx
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: redissyncer.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: redissyncer-service
+          servicePort: 8080

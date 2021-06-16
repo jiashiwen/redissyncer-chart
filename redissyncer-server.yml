@@ -3,13 +3,11 @@ kind: Deployment
 metadata:
   labels:
     app: redissyncer
-    # io.kompose.service: redissyncer-server
   name: redissyncer-server
 spec:
   replicas: 1
   selector:
     matchLabels:
-      # io.kompose.service: redissyncer-server
       app: redissyncer
   strategy:
     type: Recreate
@@ -19,7 +17,6 @@ spec:
       #   kompose.cmd: kompose convert
       #   kompose.version: 1.22.0 (955b78124)
       labels:
-        # io.kompose.service: redissyncer-server
         app: redissyncer
     spec:
       containers:

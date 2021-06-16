@@ -3,10 +3,14 @@ kind: Service
 metadata:
   labels:
     app: redissyncer
-  name: redissyncer-service
+  name: redissyncer-service-withweb
 spec:
   ports:
-    - name: http
+    - name: web
+      protocol: TCP
+      port: 3000
+      targetPort: 3000 
+    - name: server
       protocol: TCP
       port: 8080
       targetPort: 8080

@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: redissyncer-ingress-traefik
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: redissyncer.web
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: redissyncer-service-withweb
+          servicePort: 3000
+  - host: redissyncer.server
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: redissyncer-service-withweb
+          servicePort: 8080

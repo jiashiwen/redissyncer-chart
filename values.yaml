@@ -10,6 +10,9 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
+env:
+  JAVA_TOOL_OPTIONS: ' -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1 -Xms4000m'
+  SPRING_ENV: '--server.port=8080 --syncer.config.path.logfile=/redissyncer/log --syncer.config.path.datafile=/redissyncer/data --spring.datasource.url=jdbc:sqlite:/redissyncer/syncer.db --syncer.config.auth=true --spring.boot.admin.client.url=http://127.0.0.1:8088 --spring.boot.admin.client.instance.service-url=http://127.0.0.1:8080 '
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
@@ -41,7 +44,8 @@ service:
   port: 80
 
 ingress:
-  enabled: false
+  # enabled: false
+  enabled: true
   className: ""
   annotations: {}
     # kubernetes.io/ingress.class: nginx

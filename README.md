@@ -4,6 +4,7 @@
 https://idaas-sso.jdcloud.com/login/tpaas 
 
 # 上传镜像
+
 ```
 docker pull jiashiwen/redissyncer-dashboard
 docker pull jiashiwen/redissyncer
@@ -13,7 +14,14 @@ docker tag 259820d5e5c5 tpaas-registry-itg.jdcloud.com/redissyncer/jiashiwen/red
 docker push tpaas-registry-itg.jdcloud.com/redissyncer/jiashiwen/redissyncer-server:latest
 ```
 
+# 为redissyncer 新建namespace
+```
+kubectl create namespace redissyncer
+```
+
 tpaas 镜像仓库用户名密码
 helm 仓库用户名及密码
+redissyncer 安装到哪个namespace 
 tpaas pv 如何集成
+ingress 如何集成
 部署完成的访问入口是什么

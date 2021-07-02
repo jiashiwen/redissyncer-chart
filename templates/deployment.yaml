@@ -1,34 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    # app: redissyncer
+  labels:  
     {{- include "redissyncer-chart.labels" . | nindent 4 }}
-  # name: redissyncer-server-withweb
   name: {{ include "redissyncer-chart.fullname" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      # app: redissyncer
       {{- include "redissyncer-chart.selectorLabels" . | nindent 6 }}
   strategy:
     type: Recreate
   template:
     metadata:
-      labels:
-        # app: redissyncer
+      labels:     
         {{- include "redissyncer-chart.selectorLabels" . | nindent 8 }}
     spec:
-      containers:
-      - image: jiashiwen/redissyncer:latest
-        name: redissyncer-server          
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers: 
+      - name: redissyncer-server
+        image: "{{ .Values.image.redissyncer_server.repository }}:{{ .Values.image.redissyncer_server.tag | default "latest" }}"       
+        imagePullPolicy: {{ .Values.image.redissyncer_server.pullPolicy }}  
         env:
         - name: JAVA_TOOL_OPTIONS
-          # value: ' -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1 -Xms4000m'
           value: {{.Values.env.JAVA_TOOL_OPTIONS}}
         - name: SPRING_ENV
-          # value: '--server.port=8080 --syncer.config.path.logfile=/redissyncer/log --syncer.config.path.datafile=/redissyncer/data --spring.datasource.url=jdbc:sqlite:/redissyncer/syncer.db --syncer.config.auth=true --spring.boot.admin.client.url=http://127.0.0.1:8088 --spring.boot.admin.client.instance.service-url=http://127.0.0.1:8080 '
           value: {{.Values.env.SPRING_ENV}}
         resources:
           limits:
@@ -38,12 +37,14 @@ spec:
           mountPath: "/redissyncer"      
         ports:
         - containerPort: 8080
-      - image: jiashiwen/redissyncer-dashboard:v1.0
-        name: redissyncer-dashboard
+      - name: redissyncer-dashboard
+        image: "{{ .Values.image.redissyncer_dashboard.repository }}:{{ .Values.image.redissyncer_dashboard.tag | default "latest" }}"  
+        imagePullPolicy: {{ .Values.image.redissyncer_dashboard.pullPolicy }}        
         ports:
         - containerPort: 3000
       volumes:
         - name: data
           persistentVolumeClaim:
-            # claimName: redissyncer-pv-claim
             claimName: {{ include "redissyncer-chart.fullname" . }}
+
+

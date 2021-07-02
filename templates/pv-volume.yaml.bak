@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redissyncer-volume
+  # labels:
+  #   type: local
+spec:
+  storageClassName: jdcloud-lvm
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  # hostPath:
+  #   path: "/pv-data"
+  # csi:
+  #   driver: lvm.csi.jdcloud.com
+  #     fsType: ext4
+  #     volumeAttributes:
+  #       fsType: ext4
+  #       lvmType: linear
+  #       nodeAffinity: "true"
+  #       storage.kubernetes.io/csiProvisionerIdentity: 1606747537801-8081-lvm.csi.jdcloud.com
+  #    volumeHandle: lvm-032ef89b-43e3-43c7-886a-08fa46b00371
+
+
+#   {{- if .Values.persistence }}
+#   persistence:
+#     {{- if .Values.persistence.storageClassName }}
+#     storageClassName: {{ .Values.persistence.storageClassName }}
+#     {{- end }}
+#     {{- if .Values.persistence.storage }}
+#     storage: {{ .Values.persistence.storage }}
+#     {{- end }}
+#   {{- end }}
+
+

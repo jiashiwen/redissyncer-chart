@@ -18,7 +18,10 @@ docker push tpaas-registry-itg.jdcloud.com/redissyncer/jiashiwen/redissyncer-ser
 ```
 kubectl create namespace redissyncer
 ```
-
+创建secret
+```
+kubectl create secret docker-registry redissyncer-secret-key --docker-server=tpaas-registry-itg-vpc.jdcloud.com --docker-username=jiashiwen1 --docker-password=git785230root --docker-email=jiashiwen@jd.com
+```
 tpaas 镜像仓库用户名密码
 helm 仓库用户名及密码
 redissyncer 安装到哪个namespace 

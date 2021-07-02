@@ -5,15 +5,24 @@
 replicaCount: 1
 
 image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  redissyncer_server:
+    repository: tpaas-registry-itg-vpc.jdcloud.com/redissyncer/jiashiwen/redissyncer-server
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "latest"
+  redissyncer_dashboard:
+    repository: tpaas-registry-itg-vpc.jdcloud.com/redissyncer/redissyncer-dashboard
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "latest"
+
+imagePullSecrets:
+  - name: redissyncer-secret-key
 
 env:
   JAVA_TOOL_OPTIONS: ' -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1 -Xms4000m'
   SPRING_ENV: '--server.port=8080 --syncer.config.path.logfile=/redissyncer/log --syncer.config.path.datafile=/redissyncer/data --spring.datasource.url=jdbc:sqlite:/redissyncer/syncer.db --syncer.config.auth=true --spring.boot.admin.client.url=http://127.0.0.1:8088 --spring.boot.admin.client.instance.service-url=http://127.0.0.1:8080 '
-imagePullSecrets: []
+# imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
@@ -59,7 +68,8 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
-
+volume:
+  
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little

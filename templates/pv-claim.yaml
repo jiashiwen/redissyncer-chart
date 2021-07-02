@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "redissyncer-chart.labels" . | nindent 4 }}  
 spec:
-  storageClassName: manual
+  storageClassName: jdcloud-lvm
   accessModes:
     - ReadWriteOnce
   resources:

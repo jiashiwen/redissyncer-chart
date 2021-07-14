@@ -3,10 +3,9 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  # name: redissyncer-ingress-traefik
   name: {{ $fullName }}
   annotations:
-    kubernetes.io/ingress.class: kong
+    # kubernetes.io/ingress.class: kong
 spec:
   rules:
   - host: redissyncer.web
@@ -14,7 +13,6 @@ spec:
       paths:
       - path: /
         backend:
-          # serviceName: redissyncer-service-withweb
           serviceName: {{ $fullName }}
           servicePort: 3000
   - host: redissyncer.server
@@ -22,7 +20,6 @@ spec:
       paths:
       - path: /
         backend:
-          # serviceName: redissyncer-service-withweb
           serviceName: {{ $fullName }}
           servicePort: 8080
 {{- end}}

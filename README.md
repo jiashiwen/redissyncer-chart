@@ -14,14 +14,36 @@ docker tag 259820d5e5c5 tpaas-registry-itg.jdcloud.com/redissyncer/jiashiwen/red
 docker push tpaas-registry-itg.jdcloud.com/redissyncer/jiashiwen/redissyncer-server:latest
 ```
 
-# 为redissyncer 新建namespace
-```
+* 为redissyncer 新建namespace
+
+```shell
 kubectl create namespace redissyncer
 ```
-创建secret
+
+* 创建secret
+
+```shell
+kubectl create secret docker-registry redissyncer-secret-key --docker-server=tpaas-registry-itg-vpc.jdcloud.com --docker-username=jiashiwen1 --docker-password=git785230root --docker-email=jiashiwen@jd.com --namespace redissyncer
 ```
-kubectl create secret docker-registry redissyncer-secret-key --docker-server=tpaas-registry-itg-vpc.jdcloud.com --docker-username=jiashiwen1 --docker-password=git785230root --docker-email=jiashiwen@jd.com
+
+* 配置hosts
+
 ```
+114.67.232.31 redissyncer.web
+114.67.232.31 redissyncer.server
+```
+
+* 安装redissyncer
+
+```
+helm install redissyncer . --namespace redissyncer
+```
+
+* 卸载redissyncer
+```
+helm uninstall redissyncer --namespace redissyncer
+```
+
 tpaas 镜像仓库用户名密码
 helm 仓库用户名及密码
 redissyncer 安装到哪个namespace 

@@ -171,20 +171,8 @@ http://127.0.0.1:9000/dashboard/
 
 ```
 
+---
 
-
-```shell
-# Setup domain, user and password first.
-$ export USER=user
-$ export DOMAIN=ingress.redissyncer.xyz
-$ htpasswd -c auth $USER
-New password:
-Re-type new password:
-Adding password for user user
-$ PASSWORD=$(cat auth| awk -F: '{print $2}')
-
-# Deploy with helm.
-helm install stable/traefik --name --namespace kube-system --set rbac.enabled=true,acme.enabled=true,dashboard.enabled=true,acme.staging=false,acme.email=admin@$DOMAIN,dashboard.domain=ui.$DOMAIN,ssl.enabled=true,acme.challengeType=http-01,dashboard.auth.basic.$USER=$PASSWORD
 
 ```
 helm install  \
@@ -222,8 +210,9 @@ helm install ingress-nginx nginx-stable/nginx-ingress \
              --set controller.service.httpsPort.nodePort=30443
 
 
-curl -i -H "Host: server.redissyncer.io" http://10.0.0.120:31829/
+curl -i -H "Host: redissyncer.io" http://10.0.0.120:30282/
 
+curl -i -H "Host: server.redissyncer.io" http://10.0.0.120:31829/
 
 curl -H server.redissyncer.io --request POST \
   --url http://10.68.130.133/api/v2/listtasks \

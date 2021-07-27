@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  redissyncer:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2021-07-14T13:20:17.545428+08:00"
+    description: A Helm chart for Kubernetes
+    digest: 4e12006f2a20685018d800a867b8781c1a9b354f0d981ef860414d6ea104d363
+    name: redissyncer
+    type: application
+    urls:
+    - redissyncer-1.0.0.tgz
+    version: 1.0.0
+generated: "2021-07-14T13:20:17.54231+08:00"

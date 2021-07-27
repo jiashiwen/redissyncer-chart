@@ -14,6 +14,20 @@ docker tag 259820d5e5c5 tpaas-registry-itg.jdcloud.com/redissyncer/jiashiwen/red
 docker push tpaas-registry-itg.jdcloud.com/redissyncer/jiashiwen/redissyncer-server:latest
 ```
 
+# 上传chart 到helm
+* 打包
+```
+cd redissyncer-chart
+helm package .
+helm repo index .
+```
+* 上传
+```
+helm plugin install https://github.com/chartmuseum/helm-push.git
+helm push redissyncer-1.0.0.tgz itg
+```
+
+# 安装redissyncer
 * 为redissyncer 新建namespace
 
 ```shell
@@ -34,9 +48,14 @@ kubectl create secret docker-registry redissyncer-secret-key --docker-server=tpa
 ```
 
 * 安装redissyncer
-
+本地安装
 ```
 helm install redissyncer . --namespace redissyncer
+```
+
+通过仓库安装
+```
+helm install myredissyncer itg/redissyncer-chart --namespace redissyncer
 ```
 
 * 卸载redissyncer
@@ -44,9 +63,68 @@ helm install redissyncer . --namespace redissyncer
 helm uninstall redissyncer --namespace redissyncer
 ```
 
-tpaas 镜像仓库用户名密码
-helm 仓库用户名及密码
-redissyncer 安装到哪个namespace 
-tpaas pv 如何集成
-ingress 如何集成
-部署完成的访问入口是什么
+# 测试场景
+
+## 测试过程
+
+* 安装redis
+
+```shell
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm install myredis1 bitnami/redis --set replica.replicaCount=1 --set image.tag=5.0.13
+helm install myredis2 bitnami/redis --set replica.replicaCount=1 --set image.tag=5.0.13
+```
+
+* 获取redis密码
+
+```shell
+kubectl get secret --namespace default myredis1 -o jsonpath="{.data.redis-password}" | base64 --decode
+kubectl get secret --namespace default myredis2 -o jsonpath="{.data.redis-password}" | base64 --decode
+```
+
+* 连接redis
+  * 通过kubectl 映射端口
+
+  ```shell
+  # 连接service
+  kubectl port-forward --namespace default svc/myredis1-master 16379:6379
+  kubectl port-forward --namespace default svc/myredis2-master 16380:6379
+  # 连接pod
+  kubectl port-forward --namespace default pod/myredis1-master-0 16379:6379
+  kubectl port-forward --namespace default pod/myredis2-master-0 16380:6379
+  ```
+
+  * 通过redis客户端连接redis
+
+  ```shell
+  redis-cli -p 16379 -a xyALNFRSVg
+  redis-cli -p 16380 -a xxxx
+
+  ```
+
+* 通过redissyncer进行数据同步
+  * 下载redissyncer-cli
+
+  ```shell
+  wget https://github.com/TraceNature/redissyncer-cli/releases/download/v0.2.0/redissyncer-cli-v0.2.0.tar.gz
+
+  ```
+
+  * 同步任务json
+  
+  ```json
+  {
+  "sourcePassword": "XVRBS8ACEM",
+  "sourceRedisAddress": "192.168.1.248:6379",
+  "targetRedisAddress": "192.168.1.251:6379",
+  "targetPassword": "r7a2I63qhU",
+  "taskName": "in_k8s",
+  "targetRedisVersion": 4.0,
+  "autostart": true,
+  "afresh": true,
+  "batchSize": 500
+  }
+
+  ```
+
+  

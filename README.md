@@ -5,7 +5,7 @@ https://idaas-sso.jdcloud.com/login/tpaas
 
 # 上传镜像
 
-```
+```shell
 docker pull jiashiwen/redissyncer-dashboard
 docker pull jiashiwen/redissyncer
 docker tag 7459055c9735 tpaas-registry-itg.jdcloud.com/redissyncer/redissyncer-dashboard:latest
@@ -15,19 +15,24 @@ docker push tpaas-registry-itg.jdcloud.com/redissyncer/jiashiwen/redissyncer-ser
 ```
 
 # 上传chart 到helm
+
 * 打包
-```
+
+```shell
 cd redissyncer-chart
 helm package .
 helm repo index .
 ```
+
 * 上传
-```
+  
+```shell
 helm plugin install https://github.com/chartmuseum/helm-push.git
 helm push redissyncer-1.0.0.tgz itg
 ```
 
 # 安装redissyncer
+
 * 为redissyncer 新建namespace
 
 ```shell
@@ -42,24 +47,35 @@ kubectl create secret docker-registry redissyncer-secret-key --docker-server=tpa
 
 * 配置hosts
 
-```
+```shell
 114.67.232.31 redissyncer.web
 114.67.232.31 redissyncer.server
 ```
 
 * 安装redissyncer
 本地安装
-```
+
+```shell
 helm install redissyncer . --namespace redissyncer
 ```
 
 通过仓库安装
-```
+
+```shell
 helm install myredissyncer itg/redissyncer-chart --namespace redissyncer
 ```
 
-* 卸载redissyncer
+* 验证安装成果
+
+```shell
+kubectl get pod --namespace redissyncer
+NAME                             READY   STATUS    RESTARTS   AGE
+myredissyncer-6f6567f4c5-9w4g5   2/2     Running   0          13d
 ```
+
+* 卸载redissyncer
+
+```shell
 helm uninstall redissyncer --namespace redissyncer
 ```
 
@@ -119,6 +135,22 @@ kubectl get secret --namespace default myredis2 -o jsonpath="{.data.redis-passwo
   "targetRedisAddress": "192.168.1.251:6379",
   "targetPassword": "r7a2I63qhU",
   "taskName": "in_k8s",
+  "targetRedisVersion": 4.0,
+  "autostart": true,
+  "afresh": true,
+  "batchSize": 500
+  }
+
+  ```
+
+
+  ```json
+  {
+  "sourcePassword": "redistest0102",
+  "sourceRedisAddress": "114.67.76.82:16374",
+  "targetRedisAddress": "192.168.1.251:6379",
+  "targetPassword": "r7a2I63qhU",
+  "taskName": "out2k8s",
   "targetRedisVersion": 4.0,
   "autostart": true,
   "afresh": true,

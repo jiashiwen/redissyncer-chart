@@ -48,8 +48,8 @@ kubectl create secret docker-registry redissyncer-secret-key --docker-server=tpa
 * 配置hosts
 
 ```shell
-114.67.232.31 redissyncer.web
-114.67.232.31 redissyncer.server
+116.196.84.223 myredissyncer.web
+116.196.84.223 myredissyncer.server
 ```
 
 * 安装redissyncer

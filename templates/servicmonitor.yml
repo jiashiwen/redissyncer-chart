@@ -1,0 +1,55 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  annotations:
+    meta.helm.sh/release-name: brolly
+    meta.helm.sh/release-namespace: brolly
+  labels:
+    inputType: integrations   
+    integration: {{ include "redissyncer-chart.fullname" . }}  
+    release: brolly          
+  name: {{ include "redissyncer-chart.fullname" . }}          
+  namespace: brolly          
+spec:
+  endpoints:
+  - port: server
+    interval: 30s              
+    scheme: http                
+    path: /actuator/prometheus             
+    relabelings:
+    - action: replace
+      sourceLabels:
+      - __meta_kubernetes_service_label_app_kubernetes_io_name
+      targetLabel: app_name
+    - action: replace
+      sourceLabels:
+      - __meta_kubernetes_service_label_app_kubernetes_io_instance
+      targetLabel: app_instance
+    - action: replace
+      sourceLabels:
+      - __meta_kubernetes_service_label_app_kubernetes_io_component
+      targetLabel: app_component
+    - action: replace
+      sourceLabels:
+      - __meta_kubernetes_service_label_app_kubernetes_io_managed_by
+      targetLabel: app_managed_by
+    - action: replace
+      sourceLabels:
+      - __meta_kubernetes_service_label_app_kubernetes_io_deploy_by
+      targetLabel: app_managed_by
+    - action: labelmap
+      regex: __meta_kubernetes_pod_label_(.+)
+    - action: replace
+      # regex: ^redissyncer$      
+      regex: ^{{ include "redissyncer-chart.fullname" . }}$
+      replacement: {{ include "redissyncer-chart.fullname" . }}    
+      sourceLabels:
+      - app_name
+      targetLabel: integration
+  namespaceSelector:
+    any: true                   
+  selector:
+    matchLabels:
+      {{- include "redissyncer-chart.selectorLabels" . | nindent 6 }}
+      # app.kubernetes.io/managed-by: paas
+      # app.kubernetes.io/name: redissyncer

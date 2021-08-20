@@ -8,14 +8,16 @@ metadata:
     # kubernetes.io/ingress.class: kong
 spec:
   rules:
-  - host: redissyncer.web
+  # - host: redissyncer.web
+  - host: {{ $fullName }}.web
     http:
       paths:
       - path: /
         backend:
           serviceName: {{ $fullName }}
           servicePort: 3000
-  - host: redissyncer.server
+  # - host: redissyncer.server
+  - host: {{ $fullName }}.server
     http:
       paths:
       - path: /

@@ -40,6 +40,7 @@ helm.sh/chart: {{ include "redissyncer-chart.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/deploy-by: paas
 {{- end }}
 
 {{/*
@@ -48,6 +49,7 @@ Selector labels
 {{- define "redissyncer-chart.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "redissyncer-chart.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/deploy-by: paas
 {{- end }}
 
 {{/*

@@ -13,12 +13,7 @@ spec:
     type: Recreate
   template:
     metadata:
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/scheme: "http"
-        prometheus.io/path: "/actuator/prometheus"
-        prometheus.io/port: "8080"
-      labels:      
+      labels:     
         {{- include "redissyncer-chart.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
